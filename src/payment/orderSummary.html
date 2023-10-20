@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    th,
+    h2 {
+      text-align: left;
+    }
+
+    td {
+      padding-left: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <p>Dear {{firstname}} {{lastname}},</p>
+
+    <p>Thank you for choosing our vehicle warranty service. We appreciate your trust in our products and services.
+      Below, you will find a summary of your recent warranty order:</p>
+  </div>
+
+  <div style="width: 600px;">
+    <table>
+      <caption>
+        <h2>Vehicle Details:</h2>
+      </caption>
+      <tbody>
+        <tr>
+          <th>Registration Number:</th>
+          <td>{{reg_num}}</td>
+        </tr>
+        <tr>
+          <th>Make:</th>
+          <td>{{make}}</td>
+        </tr>
+        <tr>
+          <th>Fuel Type:</th>
+          <td>{{fuel_type}}</td>
+        </tr>
+        <tr>
+          <th>Model:</th>
+          <td>{{model}}</td>
+        </tr>
+        <tr>
+          <th>Date of First Registration:</th>
+          <td>{{date_first_reg}}</td>
+        </tr>
+        <tr>
+          <th>Engine Size (cc):</th>
+          <td>{{size}}</td>
+        </tr>
+        <tr>
+          <th>Mileage:</th>
+          <td>{{mileage}}</td>
+        </tr>
+        <tr>
+          <th>Drive Type:</th>
+          <td>{{drive_type}}</td>
+        </tr>
+        <tr>
+          <th>BHP:</th>
+          <td>{{bhp}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+
+    <table>
+      <caption>
+        <h2>Warranty Details:</h2>
+      </caption>
+      <tbody>
+        <tr>
+          <th>Plan Start Date:</th>
+          <td>{{start_date}}</td>
+        </tr>
+        <tr>
+          <th>Plan Expiry Date:</th>
+          <td>{{expiry_date}}</td>
+        </tr>
+        <tr>
+          <th>Service History Included:</th>
+          <td>{{service_history}}</td>
+        </tr>
+        <tr>
+          <th>Plan Type:</th>
+          <td>{{plan}}</td>
+        </tr>
+        <tr>
+          <th>Status:</th>
+          <td>{{status}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+
+    <table>
+      <caption>
+        <h2>Payment Details:</h2>
+      </caption>
+      <tbody>
+        <tr>
+          <th>Payment Method:</th>
+          <td>{{method}}</td>
+        </tr>
+        <tr>
+          <th>Payment Amount:</th>
+          <td>{{amount}}</td>
+        </tr>
+        <tr>
+          <th>Transaction ID:</th>
+          <td>{{transaction_id}}</td>
+        </tr>
+        <tr>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <p>Please review the details provided above. If you have any questions or need further assistance, please don't
+      hesitate to contact our customer support team.</p>
+
+    <p>Thank you for choosing our warranty service. We look forward to serving you and ensuring the safety and
+      security of your vehicle.</p>
+  </div>
+
+  Best regards,<br />
+  <a href="www.mekaniks.co.uk" target="_blank" style="text-decoration: none; "><b>Super Car Warranty</b></a>
+</body>
+
+</html>

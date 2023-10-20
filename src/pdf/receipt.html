@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    html {
+      zoom: 0.55;
+    }
+
+    table,
+    tr,
+    td,
+    th,
+    tbody,
+    thead,
+    tfoot {
+      page-break-inside: avoid !important;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .details {
+      margin-bottom: 20px;
+    }
+
+    table {
+      margin-top: 1rem;
+      width: 40%;
+      border-collapse: collapse;
+    }
+
+    td,
+    p {
+      padding: 8px;
+      font-size: 1.5rem;
+    }
+
+    td:first-child {
+      font-weight: bold;
+      width: 300px;
+    }
+
+    .comments ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .comments li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 style="text-align: center;">{{heading}}</h1>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>Transaction Id:</td>
+          <td>{{_id}}</td>
+        </tr>
+        <tr>
+          <td>Amount:</td>
+          <td>{{amount}}</td>
+        </tr>
+        <tr>
+          <td>Client:</td>
+          <td>{{user.firstname}} {{user.lastname}}</td>
+        </tr>
+        <tr>
+          <td>Status:</td>
+          <td>{{status}}</td>
+        </tr>
+        <tr>
+          <td>Method:</td>
+          <td>{{method}}</td>
+        </tr>
+        <tr>
+          <td>Date:</td>
+          <td>{{createdAt}}</td>
+        </tr>
+        <tr>
+          <td>Plan:</td>
+          <td>{{plan}}</td>
+        </tr>
+        <tr>
+          <td>Warranty:</td>
+          <td>{{warranty}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>
