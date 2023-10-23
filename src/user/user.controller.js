@@ -35,10 +35,11 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
 
   const token = await user.getJWTToken();
 
-  if (req.body.googleRegistration) {
-    return res.status(200).json({ user, token });
-  }
+  // if (req.body.googleRegistration) {
+  //   return res.status(200).json({ user, token });
+  // }
 
+  
   try {
     const template = fs.readFileSync(path.join(__dirname, "userRegister.html"), "utf-8");
 
