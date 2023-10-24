@@ -4,19 +4,24 @@ class APIFeatures {
 		this.queryStr = queryStr;
 	}
 
-	search(key) {
-		
-		const keyword = this.queryStr.keyword ? {
-			[key]: {
-				$regex: this.queryStr.keyword,
-				$options: "i",
-			},
-		} : {}
-
-		console.log("keyword", keyword);
-		this.query = this.query.find({ ...keyword });
+	search() {
+		const searchTerms = this.queryStr?.keyword;
+	
+		if (searchTerms) {
+			const keywordQuery = {
+				$or: [
+					{ email: { $regex: searchTerms, $options: 'i' } },
+					{ mobile_no: { $regex: searchTerms, $options: 'i' } },
+					{ firstname: { $regex: searchTerms, $options: 'i' } },
+					{ lastname: { $regex: searchTerms, $options: 'i' } },
+				]
+			};
+	
+			this.query = this.query.find(keywordQuery);
+		}
 		return this;
 	}
+	
 
 	filter() {
 		const queryCopy = { ...this.queryStr }

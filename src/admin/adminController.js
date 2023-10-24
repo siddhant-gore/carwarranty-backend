@@ -69,8 +69,8 @@ exports.getNewUsers = catchAsyncError(async (req, res, next) => {
         $nin: await warrantyModel.distinct("user")
       }
   
-    }).find().sort({createdAt: -1}),req.query
-  ).search("email");
+    }).sort({createdAt: -1}),req.query
+  ).search();
 
  let newUsers = await apiFeature.query;
  

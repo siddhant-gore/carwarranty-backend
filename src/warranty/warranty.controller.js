@@ -477,127 +477,135 @@ exports.getMyWarranties = catchAsyncError(async (req, res, next) => {
 });
 
 // Get all documents
+// Get all documents
 exports.getAllWarranty = catchAsyncError(async (req, res, next) => {
-  console.log("get all warranties", req.query);
-  const today = new Date();
-  const thirtyDaysFromNow = new Date().setDate(today.getDate() + 30);
-
+  const { role, userId } = req.user;
   const { status, keyword, currentPage, resultPerPage } = req.query;
+  const today = new Date();
+  const thirtyDaysFromNow = new Date();
+  thirtyDaysFromNow.setDate(today.getDate() + 30);
 
+  let pipeline = []
+   pipeline = [
+    ...populatePlanLevel,
+  ];
 
-  const queryOptions = [];
-  if (keyword) {
-    queryOptions.push({ $match: { "plan.level.level": req.query.keyword } });
+  // let query = warrantyModel.aggregate([...populatePlanLevel]);
+  // const apiFeatures = new APIFeatures(query, req.query);
+ console.log("keyword: ",keyword)
+
+ const isPlanName = keyword === "safe" || keyword === "secure" || keyword === "supreme";
+ let match = {};
+
+ if(keyword){
+  if (isPlanName) {
+    console.log("In plan");
+    pipeline.push({ $match: { "plan.level.level": keyword } });
+  } 
+}
+
+  if (status) {
+    
+    switch (status) {
+      case 'AWAITED':
+        match = { "status.value": 'inspection-awaited' };
+        break;
+      case 'PASSED':
+        match = { "status.value": { $in: ["inspection-passed", "order-placed", "doc-delivered"] }};
+        break;
+      case 'ACTIVE':
+        match = {
+          "status.value": 'doc-delivered',
+          start_date: { $lte: today },
+          expiry_date: { $gt: today },
+        };
+        break;
+      case 'REJECTED':
+        match = { "status.value": 'inspection-failed' };
+        break;
+      case 'TO-BE-EXPIRED':
+        match = {
+          expiry_date: { $gte: today, $lte: thirtyDaysFromNow },
+        };
+        break;
+      case 'EXPIRED':
+        match = { expiry_date: { $lte: today } };
+        break;
+    }
+    pipeline.push({ $match: match });
   }
 
   if (currentPage && resultPerPage) {
     const r = parseInt(resultPerPage);
     const c = parseInt(currentPage);
-
     const skip = r * (c - 1);
-    queryOptions.push({ $skip: skip });
-    queryOptions.push({ $limit: r });
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: r });
   }
 
-  if (status) {
-    switch (status) {
-      case 'AWAITED':
-        var match = { "status.value": 'inspection-awaited' };
-        break;
-      case 'PASSED':
-        var match = { "status.value": { $in: ["inspection-passed", "order-placed", "doc-delivered"] } };
-        break;
-      case 'ACTIVE':
-        var match = {
-          "status.value": 'doc-delivered',
-          start_date: { $lte: today },
-          expiry_date: { $gt: today }
-        };
-        break;
-
-      case 'REJECTED':
-        var match = { "status.value": 'inspection-failed' };
-        break;
-
-      case 'TO-BE-EXPIRED':
-        var match = {
-          expiry_date: {
-            $gte: today,
-            $lte: thirtyDaysFromNow,
-          }
-        };
-        break;
-
-      case 'EXPIRED':
-        var match = { expiry_date: { $lte: today } };
-        break;
-
-      default:
-        var match = {};
-        break;
-    }
-  }
-  console.log({ match });
-  // for user
-  if (req.user?.role === 'admin') {
-    var warranties = await warrantyModel.aggregate([
-      ...populatePlanLevel,
-      { $match: match },
-      {
-        $lookup: {
-          from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "user",
-        }
-      },
-      { $unwind: "$user" },
-      {
-        $lookup: {
-          from: "users",
-          localField: "salePerson",
-          foreignField: "_id",
-          as: "salePerson",
-        }
-      },
-      { $unwind: { path: "$salePerson", preserveNullAndEmptyArrays: true } },
-      { $sort: { createdAt: -1 } },
-      ...queryOptions
-    ]);
-  }
-  else if (req.user?.role === 'sale-person') {
-    var warranties = await warrantyModel.aggregate([
-      { $match: { salePerson: new mongoose.Types.ObjectId(req.userId) } },
-      ...populatePlanLevel,
-      {
-        $lookup: {
-          from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "user",
-        }
-      },
-      { $unwind: "$user" },
-      { $sort: { createdAt: -1 } },
-      ...queryOptions
-    ]);
-  }
-  else {
+  if (role === 'admin') {
+    pipeline.push({
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "_id",
+        as: "user",
+      }
+    });
+    pipeline.push({ $unwind: "$user" });
+    pipeline.push({
+      $lookup: {
+        from: "users",
+        localField: "salePerson",
+        foreignField: "_id",
+        as: "salePerson",
+      }
+    });
+    pipeline.push({ $unwind: { path: "$salePerson", preserveNullAndEmptyArrays: true } });
+  } else if (role === 'sale-person') {
+    pipeline.push({ $match: { salePerson: new mongoose.Types.ObjectId(userId) }});
+    pipeline.push({
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "_id",
+        as: "user",
+      }
+    });
+    pipeline.push({ $unwind: "$user" });
+  } else {
     return next(new ErrorHandler("Bad Request", 400));
   }
 
-  // var warranties = await apiFeature.query;
-  let warrantyCount = warranties.length;
-  // if (req.query.resultPerPage && req.query.currentPage) {
-  //   apiFeature.pagination();
+  pipeline.push({ $sort: { createdAt: -1 } });
 
-  //   console.log("warrantyCount", warrantyCount);
-  // }
+ 
+  let warranties = await warrantyModel.aggregate(pipeline);
 
-  // warranties = await apiFeature.query.clone();
-  // console.log("warranties", warranties);
+  if (keyword) {
+  if (!isPlanName) {
+    const regex = new RegExp(keyword, 'i');
+
+    warranties = warranties.filter(warranty => {
+      const user = warranty.user; // Access the user object
+      const vehicleDetails = warranty.vehicleDetails;  
+      // Use optional chaining to safely access user properties
+      return (
+        (user.firstname?.match(regex) || '').length > 0 ||
+        (user.lastname?.match(regex) || '').length > 0 ||
+        (user.email?.match(regex) || '').length > 0 ||
+        (vehicleDetails.reg_num?.match(regex) || '').length > 0 ||
+        (user.mobile_no?.match(regex) || '').length > 0
+      );
+    });
+  }
+}
+  const warrantyCount = warranties.length;
+
   res.status(200).json({ warranties, warrantyCount });
 });
+
+
 
 // Get a single document by ID
 exports.getWarranty = catchAsyncError(async (req, res, next) => {
