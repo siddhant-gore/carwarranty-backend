@@ -587,9 +587,9 @@ exports.getAllWarranty = catchAsyncError(async (req, res, next) => {
     const regex = new RegExp(keyword, 'i');
 
     warranties = warranties.filter(warranty => {
-      const user = warranty.user; // Access the user object
+      const user = warranty.user; 
       const vehicleDetails = warranty.vehicleDetails;  
-      // Use optional chaining to safely access user properties
+     
       return (
         (user.firstname?.match(regex) || '').length > 0 ||
         (user.lastname?.match(regex) || '').length > 0 ||
