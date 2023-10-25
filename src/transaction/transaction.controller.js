@@ -15,6 +15,7 @@ exports.createTransaction = catchAsyncError(async (req, res, next) => {
 // Get all documents
 exports.getAllTransaction = catchAsyncError(async (req, res, next) => {
   console.log("get all transactions")
+  console.log(req.query);
   if (!req.user) {
     const userId = req.userId;
     var transactions = await transactionModel.find({ user: userId }).sort({ createdAt: -1 }).select("-user");
@@ -22,7 +23,7 @@ exports.getAllTransaction = catchAsyncError(async (req, res, next) => {
     const apiFeature = new APIFeatures(transactionModel.find().sort({ createdAt: -1 }).populate([
       { path: "user" },
       { path: "warranty", select: "status" }
-    ]), req.query).search("plan");
+    ]), req.query).search();
     var transactions = await apiFeature.query;
     var transactionsCount = transactions.length;
     if (req.query.resultPerPage && req.query.currentPage) {

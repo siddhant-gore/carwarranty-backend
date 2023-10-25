@@ -14,6 +14,8 @@ class APIFeatures {
 					{ mobile_no: { $regex: searchTerms, $options: 'i' } },
 					{ firstname: { $regex: searchTerms, $options: 'i' } },
 					{ lastname: { $regex: searchTerms, $options: 'i' } },
+					{ plan: { $regex: searchTerms, $options: 'i' } },
+					
 				]
 			};
 	

@@ -590,6 +590,7 @@ exports.getAllWarranty = catchAsyncError(async (req, res, next) => {
       const user = warranty.user; 
       const vehicleDetails = warranty.vehicleDetails;  
      
+      
       return (
         (user.firstname?.match(regex) || '').length > 0 ||
         (user.lastname?.match(regex) || '').length > 0 ||

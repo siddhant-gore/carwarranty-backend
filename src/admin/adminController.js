@@ -88,8 +88,14 @@ exports.getNewUsers = catchAsyncError(async (req, res, next) => {
 
 // yaha tak
 
+
+//ye leads may bhi edit kiya hai: 
 exports.getLeads = catchAsyncError(async (req, res, next) => {
-  const leads = await warrantyModel.aggregate([
+
+  
+
+  
+  let leads = await warrantyModel.aggregate([
     {
       $lookup: {
         localField: "_id",
@@ -159,6 +165,22 @@ exports.getLeads = catchAsyncError(async (req, res, next) => {
     { $sort: { updatedAt: -1 } }
   ]);
 
+  const regex = new RegExp(req.query.keyword,'i');
+
+  leads = leads.filter(lead=>{
+
+    const user = lead.user;
+
+    return (
+      (user.firstname?.match(regex) || '').length > 0 ||
+      (user.lastname?.match(regex) || '').length > 0 ||
+      (user.email?.match(regex) || '').length > 0 ||
+      (user.mobile_no?.match(regex) || '').length > 0
+    );
+  })
+
+  const leadsCount = leads.length;
+
   //   const results = await warrantyModel.aggregate(aggregatePipeline).exec();
 
   //   ])
@@ -193,7 +215,7 @@ exports.getLeads = catchAsyncError(async (req, res, next) => {
   // const expired = await warrantyModel.find({ expiry_date: { $lte: new Date() } }).populate("user");
   // const refunded = await warrantyModel.find({ status: "refunded" }).populate("user");
 
-  res.status(200).json({ leads });
+  res.status(200).json({ leads , leadsCount});
   // leads: [
   //   ...failed,
   //   ...expired.map((data) => {
