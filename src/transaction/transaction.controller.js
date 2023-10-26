@@ -24,6 +24,7 @@ exports.getAllTransaction = catchAsyncError(async (req, res, next) => {
       { path: "user" },
       { path: "warranty", select: "status" }
     ]), req.query).search();
+    
     var transactions = await apiFeature.query;
     var transactionsCount = transactions.length;
     if (req.query.resultPerPage && req.query.currentPage) {

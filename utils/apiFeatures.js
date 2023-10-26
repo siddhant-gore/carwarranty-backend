@@ -10,16 +10,25 @@ class APIFeatures {
 		if (searchTerms) {
 			const keywordQuery = {
 				$or: [
+					
 					{ email: { $regex: searchTerms, $options: 'i' } },
+					
+				//	{ amount:  parseInt(searchTerms) },
 					{ mobile_no: { $regex: searchTerms, $options: 'i' } },
 					{ firstname: { $regex: searchTerms, $options: 'i' } },
 					{ lastname: { $regex: searchTerms, $options: 'i' } },
 					{ plan: { $regex: searchTerms, $options: 'i' } },
 					
+					
 				]
 			};
 	
-			this.query = this.query.find(keywordQuery);
+			try {
+				this.query = this.query.find(keywordQuery);
+			} catch (error) {
+				console.error("Search error: ",error);
+			}
+			
 		}
 		return this;
 	}

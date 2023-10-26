@@ -5,7 +5,7 @@ const CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const SECRET_KEY = process.env.PAYPAL_SECRET_ID;
 
 const paypalURL = {
-  'development': 'https://api-m.sandbox.paypal.com',
+ // 'development': 'https://api-m.sandbox.paypal.com',
   'production': 'https://api-m.paypal.com'
 };
 
