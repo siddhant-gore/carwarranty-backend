@@ -88,7 +88,6 @@ exports.getNewUsers = catchAsyncError(async (req, res, next) => {
 
 // yaha tak
 
-
 //ye leads may bhi edit kiya hai: 
 exports.getLeads = catchAsyncError(async (req, res, next) => {
 

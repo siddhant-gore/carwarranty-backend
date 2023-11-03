@@ -42,7 +42,7 @@ exports.createOrder = async (amount) => {
     purchase_units: [
       {
         amount: {
-          currency_code: "EUR",
+          currency_code: "GBP",
           // value: `${amount / 2}`,
           value: `${amount}`,
         },
